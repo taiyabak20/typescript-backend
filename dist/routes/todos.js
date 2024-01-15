@@ -2,23 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-const todos = [];
+const todos = [{ id: 'hskjf', text: 'hfsdhfkj' }];
 router.get('/', (req, res, next) => {
     res.status(200).json({ todos: todos });
 });
 router.post('/todo', (req, res, next) => {
-    const newText = req.body && req.body.text;
-    if (newText) {
-        const newTodo = {
-            id: new Date().toISOString(),
-            text: req.body.text
-        };
-        todos.push(newTodo);
-    }
-    res.json({ todos: todos });
+    const body = req.body;
+    const newTodo = {
+        id: new Date().toISOString(),
+        text: "req.body.text",
+    };
+    todos.push(newTodo);
+    res.status(201).json({ todos: todos });
 });
 router.post('/delete/:id', (req, res, next) => {
-    const todoId = +req.params.id;
+    const params = req.params;
+    const todoId = +params.id;
     const index = todos.findIndex(todo => +todo.id == todoId);
     if (index !== -1) {
         todos.splice(index, 1);
@@ -29,8 +28,10 @@ router.post('/delete/:id', (req, res, next) => {
     }
 });
 router.post('/edit/:id', (req, res, next) => {
-    const todoId = +req.params.id;
-    const newText = req.body.newText;
+    const params = req.params;
+    const todoId = +params.id;
+    const body = req.body;
+    const newText = body.newText;
     const todoIndex = todos.findIndex((todo) => +todo.id == todoId);
     if (todoIndex !== -1) {
         todos[todoIndex].text = newText;

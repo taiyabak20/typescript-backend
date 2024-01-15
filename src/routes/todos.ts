@@ -1,29 +1,29 @@
 import { Router } from 'express';
 const router = Router();
 import {Todo} from '../models/todos'
-
-const todos : Todo[] = [];
+type RequestBody = {text: string , newText: string};
+type RequestParams = {id: string}
+const todos : Todo[] = [{id: 'hskjf', text: 'hfsdhfkj'}];
 
 router.get('/', (req, res, next) =>{
     res.status(200).json({todos: todos})
 })
 
 router.post('/todo', (req, res, next)=>{
-    const newText = req.body && req.body.text;
-    if(newText){
+    const body = req.body as RequestBody;
         const newTodo: Todo ={
             id: new Date().toISOString(),
-            text: req.body.text
-        } 
+            text: "req.body.text",
+        };
         todos.push(newTodo)
-    }
-  
-   res.json({todos: todos})
+    
+   res.status(201).json({todos: todos})
 })
 
 
 router.post('/delete/:id', (req, res, next) => {
-    const todoId = +req.params.id;
+    const params = req.params as RequestParams;
+    const todoId = +params.id;
     const index = todos.findIndex(todo => +todo.id == todoId);
 
     if (index !== -1) {
@@ -36,8 +36,10 @@ router.post('/delete/:id', (req, res, next) => {
 
 
 router.post('/edit/:id', (req, res, next) => {
-    const todoId = +req.params.id;
-    const newText = req.body.newText;
+    const params = req.params as RequestParams;
+    const todoId = +params.id;
+    const body = req.body as RequestBody
+    const newText = body.newText;
     const todoIndex = todos.findIndex((todo) => +todo.id == todoId);
 
     if (todoIndex !== -1) {
